@@ -3,6 +3,7 @@ import puppeteer  from "puppeteer";
 const baseURL = 'https://cosdna.com/eng/product.php?q='; 
 let url = baseURL; 
 let productName; 
+let productIngredients; 
 async function getProductInput() {
     const answers = await inquirer.prompt({
         name: 'product_name',
@@ -32,40 +33,43 @@ async function createURL(){
 };
 
 async function scrape(){
-    const browser = await puppeteer.launch({ headless: false });
-    const page = await browser.newPage(); 
+    const browser = await puppeteer.launch({ headless: true}); //launch browser .. change headless to true after debug
+    const page = await browser.newPage();
 
-    console.log(url)
     console.log(`Navigating to: ${url}`);
 
-    try {
-        await page.goto(url);
-    } catch (error) {
-        console.error(`Failed to navigate to ${url}:`, error);
-        await browser.close();
-        return;
-    }
-
+    // waiting for page to load after routing to specific URL 
+    await page.goto(url);
     await page.waitForSelector('a.inline-block.w-full');
 
-    // Select the first <a> element with the specified class
-    const link = await page.$('a.inline-block.w-full');
+    
+    const firstLink = await page.$('a.inline-block.w-full'); // get first element that's a tag with the following classname 
 
-    // Ensure the element has an href attribute
-    const hasHref = await page.evaluate(el => el.hasAttribute('href'), link);
-
-    if (hasHref) {
-        // Optionally, click the link if desired
-        await link.click();
+    if (firstLink) {
+    
+        const href = await page.evaluate(el => el.getAttribute('href'), firstLink); 
         
-        // Optionally, wait for navigation if needed
-        await page.waitForNavigation();
+        const productURL = new URL(href, url).href;
+        console.log(`Navigating: ${productURL}`);
+        
+
+        await page.goto(productURL); // go to first specified link 
+
+        // Wait for the new page to load completely
+        await page.waitForSelector('body');
+        await page.waitForSelector('span.colors');
+
+        // Get all <span> elements with "color" as the class from page  
+        productIngredients = await page.evaluate(() => {
+            const spans = document.querySelectorAll('span.colors'); // get list of elements that match span.colors 
+            return Array.from(spans).map(span => span.textContent.trim()); // make nodeList into an array and get text value of each span element
+        });
+
+        console.log("labels: " + productIngredients); // delete after debugging done 
+
     } else {
-        console.log('No link with the specified class and href found.');
+        console.log('Product Does Not Exist.');
     }
-
-    await browser.close(); // Close the browser when done
-
 
 }; 
 
