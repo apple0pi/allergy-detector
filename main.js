@@ -12,7 +12,6 @@ const resolveAnimations = (ms = 2000) => new Promise((resolve) => setTimeout(res
 const spinner = createSpinner('loading next process');
 
 
-
 async function mainMenu(){
     const mainMenu = chalkAnimation.rainbow('\nWelcome to Allergen Main Menu!');
     await resolveAnimations();
@@ -77,6 +76,8 @@ async function allergenConsole(){
 async function checkAllergens(){
     console.clear();
     let allergies = await getAllergies(false); // false to not print out allergies
+    if(allergies.length == 0){await mainMenu();}
+
     let ingredients = await scrape(); 
     
     // compare allergies and ingredients 
