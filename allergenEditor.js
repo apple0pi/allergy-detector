@@ -6,61 +6,57 @@ import { createSpinner } from "nanospinner";
 
 let allergy_list= []; 
 
-async function addAllergies(){
-    const allergies = await inquirer.prompt({
+export async function addAllergies(){
+    let allergies = await inquirer.prompt({
         name: 'allergies', 
         type: 'input',
-        message: 'Please put in a list of allergies you are allergic to, adding a comma between each one'
+        message: 'Please put in a list of allergies you are allergic to, adding a comma between each one OR hit enter to go back'
     })
 
-    allergy_list.push(...allergies.allergies.split(", ")); // spread operator to put  the dif elements in push method
-    console.log(allergy_list); /// delete 
-    console.log(`${chalk.bgGreenBright('Added in new allergies to list')}`);
+    if(allergies.allergies.length != 0){
+        allergy_list.push(...allergies.allergies.split(", ")); // spread operator to put  the dif elements in push method
+        console.log(`${chalk.bgGreenBright('Added in new allergies to list')}`);
+    }else{
+        console.log("No new allergies added!")
+    }
+
+    
 };
 
-function getAllergies(){
+export function getAllergies(printAllergies){
     if(allergy_list.length == 0){
         console.log("Allergy list is empty. Add to the list.");
     }else{
-        console.log("List of allergies: ")
-        for(let i = 0; i < allergy_list.length; i++){
-            console.log('> ' + allergy_list[i])
+        if(printAllergies == true){
+            console.log("List of allergies: ");
+            for(let i = 0; i < allergy_list.length; i++){
+                console.log('\t> ' + allergy_list[i]);
+            }
         }
     }
     
     return allergy_list; 
 }
 
-async function deleteAllergy(){
+export async function deleteAllergy(){
     if(allergy_list.length == 0){
         console.log("Allergy list is empty. Please add to list before trying to remove");
     }else{
-        const allergies = await inquirer.prompt({
+        let allergies = await inquirer.prompt({
             name: 'allergies', 
             type: 'input',
-            message: 'Please type in one allergy to remove'
+            message: 'Please type in one allergy to remove OR hit enter to go back'
         })
+
+        if(allergies.allergies.length != 0){
+            // remove the allergies given from the allergy_list array
+            allergy_list = allergy_list.filter(item => item !== allergies.allergies);
+            console.log(`${chalk.bgGreenBright('Deleted allergies from list')}`);
+        }
     
-        // remove the allergies given from the allergy_list array
-        allergy_list = allergy_list.filter(item => item !== allergies.allergies);
-        console.log(allergy_list); // delete 
+        
     }
     
 }
 
-// async function main(){
-//     await addAllergies();
-//     await addAllergies();
-//     await deleteAllergy();
-//     getAllergies();
-// };
-
-
-
-// main()
-
-module.exports = {
-    addAllergies,
-    getAllergies,
-    deleteAllergy
-}
+export default getAllergies;
