@@ -1,11 +1,16 @@
+/**
+ * This gets all the allergen input from a user. allowing them to delete, add and see their allergens they have listed 
+ * @Author Angela Ngo
+ */
 import chalk, { chalkStderr } from "chalk";
 import inquirer from "inquirer";
-import chalkAnimation from "chalk-animation";
-import { createSpinner } from "nanospinner";
 
 
 let allergy_list= []; 
 
+/**
+ * prompt user to add in new allergies to allergen list 
+ */
 export async function addAllergies(){
     let allergies = await inquirer.prompt({
         name: 'allergies', 
@@ -23,6 +28,11 @@ export async function addAllergies(){
     
 };
 
+/**
+ * get the allergy list. boolean value to see if you want to also visually print out the allergy list 
+ * @param {boolean} printAllergies 
+ * @returns allergy_list : array 
+ */
 export function getAllergies(printAllergies){
     if(allergy_list.length == 0){
         console.log("Allergy list is empty. Add to the list.");
@@ -38,6 +48,9 @@ export function getAllergies(printAllergies){
     return allergy_list; 
 }
 
+/**
+ * deletes values from the allergy list one at a time. 
+ */
 export async function deleteAllergy(){
     if(allergy_list.length == 0){
         console.log("Allergy list is empty. Please add to list before trying to remove");

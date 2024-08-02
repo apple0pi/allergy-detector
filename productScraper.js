@@ -1,10 +1,18 @@
+/**
+ * @Author Angela Ngo 
+ * This scrapes the given website Cosdna for a given product after being typed in
+ */
 import inquirer from "inquirer";
 import puppeteer  from "puppeteer";
+// base URL  for all cosdna searches 
 const baseURL = 'https://cosdna.com/eng/product.php?q='; 
 let url = baseURL; 
 let productName; 
 let productIngredients; 
 
+/**
+ * gets product inputted by a user 
+ */
 export async function getProductInput() {
     url = baseURL; 
     let answers = await inquirer.prompt({
@@ -16,6 +24,9 @@ export async function getProductInput() {
     productName = answers.product_name;
 };
 
+/**
+ * creates the url query based on the given product input
+ */
 export async function createURL(){
     let brokenUpName = productName.split(" ");
     for (let i = 0; i < brokenUpName.length-1; i++){ // dont include the last one 
@@ -34,6 +45,12 @@ export async function createURL(){
     url+=((brokenUpName[brokenUpName.length-1]) + "&sort=featured"); 
 };
 
+/**
+ * This function calls the two other get productInput and createURL to then scrape the website for the 
+ * product ingredient information 
+ * 
+ * @returns productIngredients : Array 
+ */
 export async function scrape(){
     await getProductInput(); 
     await createURL();
