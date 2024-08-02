@@ -4,6 +4,7 @@ const baseURL = 'https://cosdna.com/eng/product.php?q=';
 let url = baseURL; 
 let productName; 
 let productIngredients; 
+
 async function getProductInput() {
     const answers = await inquirer.prompt({
         name: 'product_name',
@@ -73,11 +74,17 @@ async function scrape(){
 
 }; 
 
-async function main(){
-    await getProductInput(); 
-    await createURL(); 
-    console.log(url)
-    await scrape().catch(console.error);
-}
+// async function main(){
+//     await getProductInput(); 
+//     await createURL(); 
+//     console.log(url)
+//     await scrape().catch(console.error);
+// }
 
-main()
+// main()
+
+module.exports = {
+    getProductInput,
+    createURL,
+    scrape
+}
