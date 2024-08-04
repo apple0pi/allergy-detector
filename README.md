@@ -4,7 +4,7 @@
 
 This is a project inspired by my sister who has severe Ezcema allergies. 
 Essentially, the user will be able to create a list of allergies and add, delete or view them. 
-Users can also look up a beuaty product after to see if the product contains the ingredients they're allergic to. 
+Users can also look up a beauty product after to see if the product contains the ingredients they're allergic to. 
 
 This project was made in parallel with Capital One's Tech Mini Mester.
 

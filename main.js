@@ -4,7 +4,7 @@ import chalkAnimation from "chalk-animation";
 import { createSpinner } from "nanospinner";
 import scrape from "./productScraper.js";
 import getAllergies, {addAllergies, deleteAllergy} from "./allergenEditor.js"
-
+import getReccomendedProducts from "./reccomendProduct.js";
 const resolveAnimations = (ms = 2000) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
@@ -25,6 +25,7 @@ async function mainMenu(){
         choices: [
             { name:'Edit Allergies', value: 'edit_allergens' },
             { name: 'Check Allergens in Beauty Product', value: 'check_allergens' }, 
+            { name: 'Reccomend Beauty Products' , value: 'reccomend'},
             { name: 'Exit', value: 'exit'}
         ]
     });
@@ -45,6 +46,9 @@ async function pathChoice(choice){
         await checkAllergens();
     }else if(choice == 'exit'){
         process.exit(1);
+    }else if(choice == 'reccomend'){
+        spinner.success({test: 'Loading reccomendation console...'});
+        await recommendProductConsole();
     }
 };
 
@@ -73,8 +77,26 @@ async function allergenConsole(){
 
 };
 
+async function recommendProductConsole(){
+    let reccProd = await getReccomendedProducts();
+    if (reccProd.length == 0){
+        console.log("There are no reccomended products for your allergies unfortunately.");
+    }else{
+        console.log("Here are some reccomended products!")
+        if(reccProd.length > 12){
+            for(let k = 0 ; k < 12; k++){
+                console.log("\t> " + reccProd[k]);
+            }
+        }else{
+            for(let p = 0; p < reccProd.length; p++){
+                console.log("\t> " + reccProd[p]);
+            }
+        }
+    }
+    await mainMenu();
+}
 async function checkAllergens(){
-    console.clear();
+    // console.clear();
     let allergies = await getAllergies(false); // false to not print out allergies
     if(allergies.length == 0){await mainMenu();}
 
@@ -95,12 +117,12 @@ async function checkAllergens(){
     }
 
     await mainMenu(); // loop back to main menu 
-}
+};
 
 // compare the allergies to the gotten stuff from product_scraper
 
 async function main(){
     await mainMenu()
-}
+};
 
 main()
